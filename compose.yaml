@@ -1,0 +1,31 @@
+services:
+  accounting-db:
+    image: postgres:16
+    container_name: accounting-db
+    environment:
+      POSTGRES_DB: accounting
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U accounting"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  accounting-service:
+    build:
+      context: ./services/accounting-service
+    container_name: accounting-service
+    depends_on:
+      accounting-db:
+        condition: service_healthy
+    environment:
+      DB_HOST: accounting-db
+      DB_PORT: 5432
+      DB_NAME: accounting
+      DB_USER: admin
+      DB_PASSWORD: admin
+    ports:
+      - "8081:8080"

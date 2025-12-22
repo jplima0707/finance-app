@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: accounting-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:accounting}
+    username: ${DB_USER:accounting}
+    password: ${DB_PASSWORD:accounting}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
