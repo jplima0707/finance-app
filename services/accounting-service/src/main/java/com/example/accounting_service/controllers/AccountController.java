@@ -32,17 +32,17 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAllAccounts());
     }
 
-    @GetMapping("/")
+    @GetMapping("/by-holder")
     public ResponseEntity<AccountDTO> getAccountByHolder(
-        @RequestParam("holderId") String holderId,
+        @RequestParam("holderId") UUID holderId,
         @RequestParam("holderType") String holderType
     ) {
-        return ResponseEntity.ok(accountService.getAccountByHolder(UUID.fromString(holderId), holderType));
+        return ResponseEntity.ok(accountService.getAccountByHolder(holderId, holderType));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable String id) {
-        return ResponseEntity.ok(accountService.getAccountById(UUID.fromString(id)));
+    public ResponseEntity<AccountDTO> getAccountById(@PathVariable UUID id) {
+        return ResponseEntity.ok(accountService.getAccountById(id));
     }
 
     @PostMapping("/")
@@ -51,13 +51,13 @@ public class AccountController {
     }    
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccountDTO> updateAccount(@PathVariable String id, @RequestBody CreateAccountDTO dto) {
-        return ResponseEntity.ok(accountService.updateAccount(UUID.fromString(id), dto));
+    public ResponseEntity<AccountDTO> updateAccount(@PathVariable UUID id, @RequestBody CreateAccountDTO dto) {
+        return ResponseEntity.ok(accountService.updateAccount(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<AccountDTO> deleteAccount(@PathVariable String id) {
-        return ResponseEntity.ok(accountService.deleteAccount(UUID.fromString(id)));
+    public ResponseEntity<AccountDTO> deleteAccount(@PathVariable UUID id) {
+        return ResponseEntity.ok(accountService.deleteAccount(id));
     }
     
 }

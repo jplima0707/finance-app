@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.example.accounting_service.domain.dtos.requests.CreateAccountDTO;
 import com.example.accounting_service.domain.dtos.responses.AccountDTO;
@@ -15,6 +16,9 @@ import com.example.accounting_service.repositories.IAccountRepository;
 import com.example.accounting_service.services.interfaces.IAccountService;
 import com.example.accounting_service.mappers.AccountingMapper;
 
+import jakarta.validation.Valid;
+
+@Service
 public class AccountService implements IAccountService {
     
     @Autowired
@@ -51,7 +55,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public AccountDTO createAccount(CreateAccountDTO account) {
+    public AccountDTO createAccount(@Valid CreateAccountDTO account) {
         return accountingMapper.entityToAccountDTO(
             accountRepository.save(
                 accountingMapper.createAccountDTOToEntity(account)
@@ -67,12 +71,16 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public AccountDTO updateAccount(UUID accountId, CreateAccountDTO account) {
-        AccountDTO existingAccountDTO = getAccountById(accountId);
-        Account updatedAccount = accountingMapper.createAccountDTOToEntity(account);
-        updatedAccount.setAccountId(existingAccountDTO.id());
-        return accountingMapper.entityToAccountDTO(
-            accountRepository.save(updatedAccount)
-        );
+    public AccountDTO updateAccount(UUID accountId, @Valid CreateAccountDTO account) {
+        try { 
+            Account existingAccount = accountRepository.findById(accountId).orElseThrow(() -> new ResourceNotFoundException("Account"));
+            existingAccount.setHolderId(account.holderId());
+            existingAccount.setHolderType(HolderType.valueOf(account.holderType()));
+            return accountingMapper.entityToAccountDTO(
+                accountRepository.save(existingAccount)
+            );
+        } catch (Exception e) {
+            throw new InvalidHolderTypeException(account.holderType());
+        }
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import com.example.accounting_service.exceptions.InvalidHolderTypeException;
 import com.example.accounting_service.exceptions.ResourceNotFoundException;
@@ -44,6 +45,21 @@ public class GlobalExceptionHandler {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
 
+        @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+        public ResponseEntity<ApiErrorResponse> handleTypeMismatch(
+                MethodArgumentTypeMismatchException ex,
+                HttpServletRequest request
+        ) {
+        ApiErrorResponse error = new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid parameter",
+                "Invalid UUID format",
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiErrorResponse> handleValidation(
                 MethodArgumentNotValidException ex,
@@ -77,7 +93,6 @@ public class GlobalExceptionHandler {
                         "Unexpected error occurred",
                         request.getRequestURI()
                 );
-
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
 }

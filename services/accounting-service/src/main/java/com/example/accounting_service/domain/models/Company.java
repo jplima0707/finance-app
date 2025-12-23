@@ -34,7 +34,7 @@ public class Company {
 
     private String address;
 
-    @Column(length = 20, unique = true)
+    @Column(length = 20)
     private String phone;
 
     @Column(nullable = false, unique = true, length = 150)
