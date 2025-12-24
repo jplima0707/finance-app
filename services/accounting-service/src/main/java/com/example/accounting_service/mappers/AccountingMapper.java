@@ -15,9 +15,9 @@ public class AccountingMapper {
         Account account = new Account();
         account.setHolderId(dto.holderId());
         try {
-            account.setHolderType(HolderType.valueOf(dto.holderType()));
+            account.setHolderType(HolderType.valueOf(dto.holderType().toUpperCase()));
         } catch (IllegalArgumentException e) {
-            throw new InvalidHolderTypeException(dto.holderType());
+            throw new InvalidHolderTypeException(dto.holderType().toUpperCase());
         }
         return account;
     }

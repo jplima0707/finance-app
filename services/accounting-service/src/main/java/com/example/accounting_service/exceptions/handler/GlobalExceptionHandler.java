@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import com.example.accounting_service.exceptions.InvalidAccountStatusException;
 import com.example.accounting_service.exceptions.InvalidHolderTypeException;
 import com.example.accounting_service.exceptions.ResourceNotFoundException;
 
@@ -28,6 +29,21 @@ public class GlobalExceptionHandler {
                 );
 
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+
+        @ExceptionHandler(InvalidAccountStatusException.class)
+        public ResponseEntity<ApiErrorResponse> handleInvalidAccountStatus(
+                InvalidAccountStatusException ex,
+                HttpServletRequest request
+        ) {
+                ApiErrorResponse error = new ApiErrorResponse(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Invalid account status",
+                        ex.getMessage(),
+                        request.getRequestURI()
+                );
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
         }
 
         @ExceptionHandler(InvalidHolderTypeException.class)

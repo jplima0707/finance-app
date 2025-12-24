@@ -16,4 +16,5 @@ public interface IAccountService {
     public AccountDTO createAccount(@Valid CreateAccountDTO account);
     public AccountDTO deleteAccount(UUID accountId);
     public AccountDTO updateAccount(UUID accountId, @Valid CreateAccountDTO account);
+    public AccountDTO updateAccountStatus(UUID accountId, String status);
 }

@@ -14,8 +14,6 @@ import com.example.accounting_service.mappers.CompanyMapper;
 import com.example.accounting_service.repositories.ICompanyRepository;
 import com.example.accounting_service.services.interfaces.ICompanyService;
 
-import jakarta.validation.Valid;
-
 @Service
 public class CompanyService implements ICompanyService {
 
@@ -36,7 +34,7 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public CompanyDTO createCompany(@Valid CreateCompanyDTO companyDTO) {
+    public CompanyDTO createCompany(CreateCompanyDTO companyDTO) {
         Company company = companyMapper.createCompanyToEntity(companyDTO);
         return companyMapper.entityToCompanyDTO(companyRepository.save(company));
     }
@@ -49,7 +47,7 @@ public class CompanyService implements ICompanyService {
     }
 
     @Override
-    public CompanyDTO updateCompany(UUID id, @Valid CreateCompanyDTO companyDTO) {
+    public CompanyDTO updateCompany(UUID id, CreateCompanyDTO companyDTO) {
         Company existingCompany = companyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Company"));
         existingCompany.setName(companyDTO.name());
         existingCompany.setCnpj(companyDTO.cnpj());

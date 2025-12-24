@@ -32,10 +32,10 @@ public class User {
     @Column(nullable = false, length = 120)
     private String name;
 
-    @Column(length = 20, unique = true)
+    @Column(length = 20)
     private String phone;
 
-    @Column(length = 14, unique = true)
+    @Column(length = 14, unique = true, nullable = false)
     private String cpf;
 
     @Column(nullable = false, unique = true, length = 150)

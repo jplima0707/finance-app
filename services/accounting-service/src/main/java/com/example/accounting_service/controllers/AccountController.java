@@ -20,6 +20,8 @@ import com.example.accounting_service.domain.dtos.requests.CreateAccountDTO;
 import com.example.accounting_service.domain.dtos.responses.AccountDTO;
 import com.example.accounting_service.services.interfaces.IAccountService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
@@ -46,18 +48,23 @@ public class AccountController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<AccountDTO> createAccount(@RequestBody CreateAccountDTO dto) {
+    public ResponseEntity<AccountDTO> createAccount(@RequestBody @Valid CreateAccountDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createAccount(dto));
     }    
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccountDTO> updateAccount(@PathVariable UUID id, @RequestBody CreateAccountDTO dto) {
+    public ResponseEntity<AccountDTO> updateAccount(@PathVariable UUID id, @RequestBody @Valid CreateAccountDTO dto) {
         return ResponseEntity.ok(accountService.updateAccount(id, dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<AccountDTO> deleteAccount(@PathVariable UUID id) {
         return ResponseEntity.ok(accountService.deleteAccount(id));
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<AccountDTO> updateAccountStatus(@PathVariable UUID id, @RequestParam("status") String status) {
+        return ResponseEntity.ok(accountService.updateAccountStatus(id, status));
     }
     
 }

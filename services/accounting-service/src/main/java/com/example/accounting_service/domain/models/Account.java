@@ -24,7 +24,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "accounts")
 @Getter
-@NoArgsConstructor
 public class Account {
     
     @Id
@@ -66,6 +65,11 @@ public class Account {
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = Instant.now();
+    }
+
+    public Account() {
+        this.accountStatus = AccountStatus.ACTIVE;
+        this.balance = BigDecimal.ZERO;
     }
 
     public Account(UUID holderId, HolderType holderType) {
