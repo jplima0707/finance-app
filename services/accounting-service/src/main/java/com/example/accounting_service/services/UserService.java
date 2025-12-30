@@ -10,18 +10,19 @@ import com.example.accounting_service.exceptions.ResourceNotFoundException;
 import com.example.accounting_service.domain.dtos.requests.CreateUserDTO;
 import com.example.accounting_service.domain.dtos.responses.UserDTO;
 import com.example.accounting_service.services.interfaces.IUserService;
+
+import lombok.RequiredArgsConstructor;
+
 import com.example.accounting_service.mappers.UserMapper;
 import com.example.accounting_service.domain.models.User;
 import com.example.accounting_service.repositories.IUserRepository;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements IUserService {
 
-    @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
-    private IUserRepository userRepository;
+    private final UserMapper userMapper;
+    private final IUserRepository userRepository;
 
     @Override
     public UserDTO getUserById(UUID userId) {

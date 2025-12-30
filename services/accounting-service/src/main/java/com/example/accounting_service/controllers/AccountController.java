@@ -3,7 +3,6 @@ package com.example.accounting_service.controllers;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,13 +20,14 @@ import com.example.accounting_service.domain.dtos.responses.AccountDTO;
 import com.example.accounting_service.services.interfaces.IAccountService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/accounts")
+@RequiredArgsConstructor
 public class AccountController {
     
-    @Autowired
-    private IAccountService accountService;
+    private final IAccountService accountService;
 
     @GetMapping("/")
     public ResponseEntity<List<AccountDTO>> getAllAccounts() {
