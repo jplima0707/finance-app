@@ -20,7 +20,7 @@ O foco não é apenas “fazer funcionar”, mas **entender por que as coisas s�
   - idempotência  
   - rastreabilidade de eventos  
   - separação de responsabilidades  
-- Criar uma base sólida para evoluções futuras (ledger, extratos, auditoria, etc.)
+- Criar uma base sólida para evoluções futuras (ledger, extratos, auditoria, kubernetes, etc.)
 
 ---
 
@@ -34,6 +34,18 @@ A arquitetura segue o padrão:
 - Comunicação desacoplada entre domínios
 
 Visão simplificada:
+
+Frontend
+   |
+API Gateway (futuro)
+   |
+Transaction Service (REST)
+   |
+Kafka (events)
+   |
+Accounting Service
+   |
+(futuro) Statement / Ledger / Reports
 
 # 💰 Financial Microservices Playground
 
