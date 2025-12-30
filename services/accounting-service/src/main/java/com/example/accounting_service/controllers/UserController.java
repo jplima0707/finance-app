@@ -10,8 +10,8 @@ import com.example.accounting_service.domain.dtos.responses.UserDTO;
 import com.example.accounting_service.services.interfaces.IUserService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
     
-    @Autowired
-    private IUserService userService;
+    private final IUserService userService;
 
     @GetMapping("/")
     public ResponseEntity<List<UserDTO>> getAllUsers() {

@@ -3,7 +3,6 @@ package com.example.accounting_service.controllers;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,16 +20,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.example.accounting_service.domain.dtos.requests.CreateCompanyDTO;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 @RestController
 @RequestMapping("/companies")
+@RequiredArgsConstructor
 public class CompanyController {
     
-    @Autowired
-    private ICompanyService companyService;
+    private final ICompanyService companyService;
 
     @GetMapping("/")
     public ResponseEntity<List<CompanyDTO>> getAllCompanies() {

@@ -3,7 +3,6 @@ package com.example.accounting_service.services;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.accounting_service.domain.dtos.requests.CreateCompanyDTO;
@@ -14,14 +13,14 @@ import com.example.accounting_service.mappers.CompanyMapper;
 import com.example.accounting_service.repositories.ICompanyRepository;
 import com.example.accounting_service.services.interfaces.ICompanyService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CompanyService implements ICompanyService {
 
-    @Autowired
-    private ICompanyRepository companyRepository;
-
-    @Autowired
-    private CompanyMapper companyMapper;
+    private final ICompanyRepository companyRepository;
+    private final CompanyMapper companyMapper;
     
     @Override
     public List<CompanyDTO> getAllCompanies() {

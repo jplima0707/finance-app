@@ -3,28 +3,27 @@ package com.example.accounting_service.services;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.accounting_service.domain.dtos.requests.CreateAccountDTO;
 import com.example.accounting_service.domain.dtos.responses.AccountDTO;
 import com.example.accounting_service.domain.enums.AccountStatus;
-import com.example.accounting_service.domain.models.Account;
 import com.example.accounting_service.domain.enums.HolderType;
-import com.example.accounting_service.exceptions.ResourceNotFoundException;
+import com.example.accounting_service.domain.models.Account;
 import com.example.accounting_service.exceptions.InvalidHolderTypeException;
+import com.example.accounting_service.exceptions.ResourceNotFoundException;
+import com.example.accounting_service.mappers.AccountingMapper;
 import com.example.accounting_service.repositories.IAccountRepository;
 import com.example.accounting_service.services.interfaces.IAccountService;
-import com.example.accounting_service.mappers.AccountingMapper;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService implements IAccountService {
     
-    @Autowired
-    private IAccountRepository accountRepository;
-
-    @Autowired
-    private AccountingMapper accountingMapper;
+    private final IAccountRepository accountRepository;
+    private final AccountingMapper accountingMapper;
 
     @Override
     public AccountDTO getAccountById(UUID accountId) {
