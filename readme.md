@@ -112,7 +112,7 @@ Responsável por:
 
 ---
 
-## 1️⃣ Subir a infraestrutura (Kafka + bancos)
+## 1️⃣ Subir o projeto
 
 Na raiz do projeto:
 
@@ -126,7 +126,9 @@ Isso irá subir:
 
  - Kafka
 
- - Todos os serviços
+ - Accouting Service
+
+ - Transaction Service
 
  - Kafka UI
 

@@ -39,9 +39,11 @@ public class Transaction {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TransactionType type;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TransactionStatus status;
 
     @Column(length = 500)
@@ -51,15 +53,15 @@ public class Transaction {
     private Instant createdAt;
 
     @PrePersist
-    protected void onUpdate() {
+    protected void onCreate() {
         this.createdAt = Instant.now();
+        this.status = TransactionStatus.PENDING;
     }
 
-    public Transaction(UUID accountId, BigDecimal amount, TransactionType type, TransactionStatus status, String description) {
+    public Transaction(UUID accountId, BigDecimal amount, TransactionType type, String description) {
         this.accountId = accountId;
         this.amount = amount;
         this.type = type;
-        this.status = status;
         this.description = description;
     }
 }
