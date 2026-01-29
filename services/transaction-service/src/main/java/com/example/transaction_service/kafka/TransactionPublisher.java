@@ -25,7 +25,8 @@ public class TransactionPublisher {
         TransactionRequestedEvent event = new TransactionRequestedEvent(
             UUID.randomUUID(),
             transaction.getTransactionId(),
-            transaction.getAccountId(),
+            transaction.getSourceAccountId(),
+            transaction.getDestinationAccountId(),
             transaction.getAmount(),
             transaction.getType().name(),
             Instant.now(),
@@ -39,7 +40,7 @@ public class TransactionPublisher {
 
         kafkaTemplate.send(
             KafkaTopics.TRANSACTION_REQUESTED,
-            transaction.getAccountId().toString(),
+            transaction.getSourceAccountId().toString(),
             EventSerializer.toJson(event)
         );
     }
@@ -48,7 +49,8 @@ public class TransactionPublisher {
         TransactionCreatedEvent event = new TransactionCreatedEvent(
             UUID.randomUUID(),
             transaction.getTransactionId(),
-            transaction.getAccountId(),
+            transaction.getSourceAccountId(),
+            transaction.getDestinationAccountId(),
             transaction.getAmount(),    
             Instant.now(),
             new EventMetadata(
@@ -61,7 +63,7 @@ public class TransactionPublisher {
 
         kafkaTemplate.send(
             KafkaTopics.TRANSACTION_CREATED,
-            transaction.getAccountId().toString(),
+            transaction.getSourceAccountId().toString(),
             EventSerializer.toJson(event)
         );
     }

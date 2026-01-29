@@ -1,16 +1,17 @@
 package com.example.transaction_service.services;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.example.transaction_service.domain.dtos.requests.CreateTransactionDTO;
-import com.example.transaction_service.domain.dtos.responses.TransactionDTO;
+import com.example.transaction_service.domain.dtos.responses.TransactionResult;
 import com.example.transaction_service.domain.models.Transaction;
 import com.example.transaction_service.kafka.TransactionPublisher;
 import com.example.transaction_service.mappers.TransactionMapper;
 import com.example.transaction_service.repositories.ITransactionRepository;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,7 +23,15 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
     
     @Transactional
-    public TransactionDTO create(@Valid CreateTransactionDTO request) {
+    public TransactionResult create(CreateTransactionDTO request) {
+
+        Optional<Transaction> existingTransaction = transactionRepository.findByIdempotencyKey(request.idempotencyKey());
+        if (existingTransaction.isPresent()) {
+            return new TransactionResult(
+            transactionMapper.entityToDTO(existingTransaction.get()),
+            true
+        );
+        }
 
         Transaction transaction = transactionMapper.dtoToEntity(request);
 
@@ -30,6 +39,9 @@ public class TransactionService {
 
         eventPublisher.publishTransactionRequested(transaction);
 
-        return transactionMapper.entityToDTO(transaction);
+        return new TransactionResult(
+            transactionMapper.entityToDTO(transaction),
+            false
+        );
     }
 }

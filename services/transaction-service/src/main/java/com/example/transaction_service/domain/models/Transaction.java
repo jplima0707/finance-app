@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +25,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "transactions")
+@Table(
+  name = "transactions",
+  uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"idempotency_key"})
+  }
+)
 public class Transaction {
 
     @Id
@@ -32,8 +38,11 @@ public class Transaction {
     @GeneratedValue(strategy=GenerationType.UUID)
     private UUID transactionId;
 
-    @Column(name = "account_id", nullable = false)
-    private UUID accountId;
+    @Column(name = "source_account_id", nullable = false)
+    private UUID sourceAccountId;
+
+    @Column(name = "destination_account_id")
+    private UUID destinationAccountId;
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
@@ -52,14 +61,18 @@ public class Transaction {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "idempotency_key", nullable = false, unique = true)
+    private String idempotencyKey;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = Instant.now();
         this.status = TransactionStatus.PENDING;
     }
 
-    public Transaction(UUID accountId, BigDecimal amount, TransactionType type, String description) {
-        this.accountId = accountId;
+    public Transaction(UUID sourceAccountId, UUID destinationAccountId, BigDecimal amount, TransactionType type, String description) {
+        this.sourceAccountId = sourceAccountId;
+        this.destinationAccountId = destinationAccountId;
         this.amount = amount;
         this.type = type;
         this.description = description;

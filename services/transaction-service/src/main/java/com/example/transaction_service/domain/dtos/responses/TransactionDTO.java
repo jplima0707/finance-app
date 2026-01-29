@@ -9,7 +9,8 @@ import com.example.transaction_service.domain.enums.TransactionType;
 
 public record TransactionDTO(
     UUID id,
-    UUID accountId,
+    UUID sourceAccountId,
+    UUID destinationAccountId,
     BigDecimal amount,
     TransactionType type,
     String description,

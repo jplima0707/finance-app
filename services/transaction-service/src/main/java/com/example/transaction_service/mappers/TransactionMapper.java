@@ -8,7 +8,8 @@ public class TransactionMapper {
     public TransactionDTO entityToDTO(Transaction transaction) {
         return new TransactionDTO(
             transaction.getTransactionId(),
-            transaction.getAccountId(),
+            transaction.getSourceAccountId(),
+            transaction.getDestinationAccountId(),
             transaction.getAmount(),
             transaction.getType(),
             transaction.getDescription(),
@@ -19,10 +20,12 @@ public class TransactionMapper {
 
     public Transaction dtoToEntity(CreateTransactionDTO dto) {
         Transaction transaction = new Transaction();
-        transaction.setAccountId(dto.accountId());
+        transaction.setSourceAccountId(dto.sourceAccountId());
+        transaction.setDestinationAccountId(dto.destinationAccountId());
         transaction.setAmount(dto.amount());
         transaction.setType(dto.type());
         transaction.setDescription(dto.description());
+        transaction.setIdempotencyKey(dto.idempotencyKey());
         return transaction;
     }
 }
