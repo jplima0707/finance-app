@@ -1,9 +1,12 @@
 package com.example.transaction_service.mappers;
 
+import org.springframework.stereotype.Component;
+
 import com.example.transaction_service.domain.dtos.requests.CreateTransactionDTO;
 import com.example.transaction_service.domain.dtos.responses.TransactionDTO;
 import com.example.transaction_service.domain.models.Transaction;
 
+@Component
 public class TransactionMapper {
     public TransactionDTO entityToDTO(Transaction transaction) {
         return new TransactionDTO(
