@@ -34,7 +34,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAllAccounts());
     }
 
-    @GetMapping("/by-holder")
+    @GetMapping("/accountByHolder")
     public ResponseEntity<AccountDTO> getAccountByHolder(
         @RequestParam("holderId") UUID holderId,
         @RequestParam("holderType") String holderType

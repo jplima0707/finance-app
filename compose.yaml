@@ -31,33 +31,41 @@ services:
       
   accounting-service:
     build:
-      context: ./services/accounting-service
+      context: .
+      dockerfile: ./services/accounting-service/Dockerfile
     container_name: accounting-service
     depends_on:
       accounting-db:
         condition: service_healthy
+      kafka:
+        condition: service_started
     environment:
       DB_HOST: accounting-db
       DB_PORT: 5432
       DB_NAME: accounting
       DB_USER: admin
       DB_PASSWORD: admin
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     ports:
       - "8081:8080"
 
   transaction-service:
     build:
-      context: ./services/transaction-service
+      context: .
+      dockerfile: ./services/transaction-service/Dockerfile
     container_name: transaction-service
     depends_on:
       transaction-db:
         condition: service_healthy
+      kafka:
+        condition: service_started
     environment:
       DB_HOST: transaction-db
       DB_PORT: 5432
       DB_NAME: transaction
       DB_USER: admin
       DB_PASSWORD: admin
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     ports:
       - "8082:8080"
 
