@@ -3,8 +3,6 @@ package com.example.transaction_service.domain.dtos.requests;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import com.example.transaction_service.domain.enums.TransactionType;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -19,9 +17,6 @@ public record CreateTransactionDTO(
     @NotNull
     @Positive
     BigDecimal amount,
-
-    @NotNull
-    TransactionType type,
 
     @Size(max = 500)
     String description,

@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.example.transaction_service.domain.enums.TransactionStatus;
-import com.example.transaction_service.domain.enums.TransactionType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,10 +48,6 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionType type;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private TransactionStatus status;
 
     @Column(length = 500)
@@ -70,11 +65,10 @@ public class Transaction {
         this.status = TransactionStatus.PENDING;
     }
 
-    public Transaction(UUID sourceAccountId, UUID destinationAccountId, BigDecimal amount, TransactionType type, String description) {
+    public Transaction(UUID sourceAccountId, UUID destinationAccountId, BigDecimal amount, String description) {
         this.sourceAccountId = sourceAccountId;
         this.destinationAccountId = destinationAccountId;
         this.amount = amount;
-        this.type = type;
         this.description = description;
     }
 }

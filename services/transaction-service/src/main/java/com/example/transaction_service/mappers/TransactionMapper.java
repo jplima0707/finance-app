@@ -14,7 +14,6 @@ public class TransactionMapper {
             transaction.getSourceAccountId(),
             transaction.getDestinationAccountId(),
             transaction.getAmount(),
-            transaction.getType(),
             transaction.getDescription(),
             transaction.getStatus(),
             transaction.getCreatedAt()
@@ -26,7 +25,6 @@ public class TransactionMapper {
         transaction.setSourceAccountId(dto.sourceAccountId());
         transaction.setDestinationAccountId(dto.destinationAccountId());
         transaction.setAmount(dto.amount());
-        transaction.setType(dto.type());
         transaction.setDescription(dto.description());
         transaction.setIdempotencyKey(dto.idempotencyKey());
         return transaction;
