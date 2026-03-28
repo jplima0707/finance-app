@@ -31,7 +31,8 @@ services:
       
   accounting-service:
     build:
-      context: ./services/accounting-service
+      context: .
+      dockerfile: ./services/accounting-service/Dockerfile
     container_name: accounting-service
     depends_on:
       accounting-db:
@@ -47,7 +48,8 @@ services:
 
   transaction-service:
     build:
-      context: ./services/transaction-service
+      context: .
+      dockerfile: ./services/transaction-service/Dockerfile
     container_name: transaction-service
     depends_on:
       transaction-db:

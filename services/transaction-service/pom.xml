@@ -30,13 +30,6 @@
 		<java.version>21</java.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>github</id>
-			<url>https://maven.pkg.github.com/jplima0707/common-kafka</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.jplima0707</groupId>
