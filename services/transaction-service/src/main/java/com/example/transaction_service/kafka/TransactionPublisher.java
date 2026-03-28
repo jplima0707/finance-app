@@ -28,7 +28,6 @@ public class TransactionPublisher {
             transaction.getSourceAccountId(),
             transaction.getDestinationAccountId(),
             transaction.getAmount(),
-            transaction.getType().name(),
             Instant.now(),
             new EventMetadata(
                 "TRANSACTION_REQUESTED",
