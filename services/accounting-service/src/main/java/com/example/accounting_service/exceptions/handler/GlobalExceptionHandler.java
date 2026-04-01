@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         ) {
                 ApiErrorResponse error = new ApiErrorResponse(
                         HttpStatus.NOT_FOUND.value(),
-                 "Resource not found",
+                        "Resource not found",
                         ex.getMessage(),
                         request.getRequestURI()
                 );
