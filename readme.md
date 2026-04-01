@@ -19,6 +19,7 @@ O foco não é apenas “fazer funcionar”, mas **entender por que as coisas s�
   - consistência eventual  
   - idempotência  
   - rastreabilidade de eventos  
+  - race conditions
   - separação de responsabilidades  
 - Criar uma base sólida para evoluções futuras (ledger, extratos, auditoria, etc.)
 
@@ -32,21 +33,6 @@ A arquitetura segue o padrão:
 - **Kafka** para propagação de eventos entre serviços
 - **Bancos isolados por serviço**
 - Comunicação desacoplada entre domínios
-
-Visão simplificada:
-
-Frontend
-|
-API Gateway (futuro)
-|
-Transaction Service (REST)
-|
-Kafka (events)
-|
-Accounting Service
-|
-(futuro) Statement / Ledger / Reports
-
 
 ---
 
@@ -192,7 +178,7 @@ http://localhost:8082/swagger-ui/index.html (transaction-service)
 ## 📊 Novos serviços
 
 - [ ] Criar **Statement Service** (extratos) utilizando MongoDB  
-- [ ] Criar **Ledger Service** (registro contábil imutável)  
+- [ ] Criar **Ledger Service** (registro contábil imutável) usando Go
 - [ ] Criar **Report Service** (relatórios financeiros e métricas)  
 - [ ] Criar **Notification Service** (eventos e alertas)
 

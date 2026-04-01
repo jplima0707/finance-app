@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import com.example.accounting_service.domain.enums.AccountStatus;
 import com.example.accounting_service.domain.enums.HolderType;
+import com.example.accounting_service.domain.dtos.types.TransactionValidationResult;
+import com.example.accounting_service.domain.enums.TransactionValidationErrors;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,6 +48,7 @@ public class Account {
     private AccountStatus accountStatus; // "ACTIVE", "INACTIVE", "SUSPENDED", "BLOCKED"
 
     @Column(nullable = false, precision = 19, scale = 2)
+    @Setter
     private BigDecimal balance;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -76,5 +79,22 @@ public class Account {
         this.holderType = holderType;
         this.accountStatus = AccountStatus.ACTIVE;
         this.balance = BigDecimal.ZERO;
+    }
+
+    public TransactionValidationResult canDebit(BigDecimal amount) {
+        if (this.accountStatus != AccountStatus.ACTIVE) {
+            return new TransactionValidationResult(false, TransactionValidationErrors.ACCOUNT_INACTIVE);
+        }
+        if (this.balance.compareTo(amount) < 0) {
+            return new TransactionValidationResult(false, TransactionValidationErrors.BALANCE_INSUFFICIENT);
+        }
+        return new TransactionValidationResult(true, null);
+    }
+
+    public TransactionValidationResult canCredit() {
+        if (this.accountStatus != AccountStatus.ACTIVE) {
+            return new TransactionValidationResult(false, TransactionValidationErrors.ACCOUNT_INACTIVE);
+        }
+        return new TransactionValidationResult(true, null);
     }
 }

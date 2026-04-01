@@ -14,14 +14,17 @@ import com.jplima0707.common.events.TransactionCreatedEvent;
 import com.jplima0707.common.events.TransactionRequestedEvent;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionPublisher {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     
     public void publishTransactionRequested(Transaction transaction) {
+        log.info("Publishing transaction requested event for transaction ID: {}", transaction.getTransactionId());  
         TransactionRequestedEvent event = new TransactionRequestedEvent(
             UUID.randomUUID(),
             transaction.getTransactionId(),
@@ -45,6 +48,7 @@ public class TransactionPublisher {
     }
 
     public void publishTransactionCreated(Transaction transaction) {
+        log.info("Publishing transaction created event for transaction ID: {}", transaction.getTransactionId());
         TransactionCreatedEvent event = new TransactionCreatedEvent(
             UUID.randomUUID(),
             transaction.getTransactionId(),
