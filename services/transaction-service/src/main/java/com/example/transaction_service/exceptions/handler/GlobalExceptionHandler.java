@@ -8,9 +8,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import jakarta.servlet.http.HttpServletRequest;
+import com.example.transaction_service.exceptions.InvalidAccountStatusException;
+import com.example.transaction_service.exceptions.ResourceNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleResourceNotFound(ResourceNotFoundException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiErrorResponse(
+                HttpStatus.NOT_FOUND.value(), "Resource not found", ex.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(InvalidAccountStatusException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidAccountStatus(InvalidAccountStatusException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST.value(), "Invalid account status", ex.getMessage(), request.getRequestURI()));
+    }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiErrorResponse> handleTypeMismatch(

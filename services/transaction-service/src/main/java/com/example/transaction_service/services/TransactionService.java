@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import com.example.transaction_service.domain.dtos.requests.CreateTransactionDTO;
 import com.example.transaction_service.domain.dtos.responses.TransactionDTO;
 import com.example.transaction_service.domain.dtos.responses.TransactionResult;
+import com.example.transaction_service.domain.models.Account;
 import com.example.transaction_service.domain.models.Transaction;
 import com.example.transaction_service.kafka.TransactionPublisher;
 import com.example.transaction_service.mappers.TransactionMapper;
+import com.example.transaction_service.repositories.IAccountRepository;
 import com.example.transaction_service.repositories.ITransactionRepository;
 
 import jakarta.transaction.Transactional;
@@ -23,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class TransactionService {
 
     private final ITransactionRepository transactionRepository;
+    private final IAccountRepository accountRepository;
     private final TransactionPublisher eventPublisher;
     private final TransactionMapper transactionMapper;
     
@@ -37,8 +40,14 @@ public class TransactionService {
         );
         }
 
+        Optional<Account> destinationAccount = accountRepository.findById(request.destinationAccountId());
+        if (destinationAccount.isEmpty()) {
+            throw new IllegalArgumentException("Destination account not found");
+        }
+
         Transaction transaction = transactionMapper.dtoToEntity(request);
 
+        // out box pattern
         transactionRepository.save(transaction);
 
         eventPublisher.publishTransactionRequested(transaction);
