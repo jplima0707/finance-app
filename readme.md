@@ -35,7 +35,7 @@ As tecnologias são escolhidas para representar ferramentas relevantes no desenv
 
 - [ ] Construir um fluxo completo de transações financeiras entre contas
 - [x] Separar claramente as responsabilidades de **Accounting** e **Ledger**
-- [ ] Utilizar **Kafka** para comunicação assíncrona baseada em eventos
+- [x] Utilizar **Kafka** para comunicação assíncrona baseada em eventos
 - [ ] Garantir idempotência em requisições externas e no processamento de eventos
 - [ ] Explorar **at-least-once delivery**, retries e mensagens duplicadas
 - [ ] Implementar **Transactional Outbox** e **Inbox Pattern**
