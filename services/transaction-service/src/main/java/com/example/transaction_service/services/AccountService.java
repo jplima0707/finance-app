@@ -9,9 +9,11 @@ import com.example.transaction_service.domain.dtos.requests.CreateAccountDTO;
 import com.example.transaction_service.domain.dtos.responses.AccountDTO;
 import com.example.transaction_service.domain.enums.AccountStatus;
 import com.example.transaction_service.domain.models.Account;
+import com.example.transaction_service.domain.models.User;
 import com.example.transaction_service.exceptions.ResourceNotFoundException;
 import com.example.transaction_service.mappers.AccountMapper;
 import com.example.transaction_service.repositories.IAccountRepository;
+import com.example.transaction_service.repositories.IUserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountService  {
     
     private final IAccountRepository accountRepository;
+    private final IUserRepository userRepository;
     private final AccountMapper accountMapper;
 
     public AccountDTO getAccountById(UUID accountId) {
@@ -29,7 +32,7 @@ public class AccountService  {
 
     public AccountDTO getAccountByHolder(UUID userId) {
         return accountMapper.entityToAccountDTO(
-            accountRepository.findByUserId(userId)
+            accountRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Account"))
         );
     }
@@ -41,9 +44,11 @@ public class AccountService  {
     }
 
     public AccountDTO createAccount(CreateAccountDTO account) {
+        User user = userRepository.findById(account.userId())
+            .orElseThrow(() -> new ResourceNotFoundException("User"));
         return accountMapper.entityToAccountDTO(
             accountRepository.save(
-                accountMapper.createAccountDTOToEntity(account)
+                accountMapper.createAccountDTOToEntity(account, user)
             )
         );
     }
@@ -57,7 +62,9 @@ public class AccountService  {
     public AccountDTO updateAccount(UUID accountId, CreateAccountDTO account) {
         Account existingAccount = accountRepository.findById(accountId)
             .orElseThrow(() -> new ResourceNotFoundException("Account"));
-        existingAccount.setUserId(account.userId());
+        User user = userRepository.findById(account.userId())
+            .orElseThrow(() -> new ResourceNotFoundException("User"));
+        existingAccount.setUser(user);
         return accountMapper.entityToAccountDTO(accountRepository.save(existingAccount));
     }
 

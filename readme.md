@@ -31,6 +31,69 @@ As tecnologias são escolhidas para representar ferramentas relevantes no desenv
 
 ---
 
+# ▶️ Como rodar o projeto
+
+## Pré-requisitos
+
+- Docker
+- Docker Compose
+- Java 17+
+- Maven
+
+## 1️⃣ Subir os serviços
+
+Na raiz do projeto:
+
+```bash
+docker compose up --build -d
+```
+
+Para verificar os containers em execução:
+
+```bash
+docker compose ps
+```
+
+Para acompanhar os logs:
+
+```bash
+docker compose logs -f
+```
+
+Para parar o ambiente:
+
+```bash
+docker compose down
+```
+
+## 2️⃣ Kafka UI
+
+A interface do Kafka estará disponível em:
+
+```text
+http://localhost:8090
+```
+
+## 3️⃣ Swagger
+
+Após os serviços iniciarem, as APIs estarão disponíveis através do Swagger:
+
+### Accounting Service
+
+```text
+http://localhost:8081/swagger-ui/index.html
+```
+
+### Ledger Service
+
+```text
+http://localhost:8082/swagger-ui/index.html
+```
+
+> As portas e endpoints podem ser alterados conforme a configuração dos serviços.
+
+---
+
 # 🎯 Goals
 
 - [ ] Construir um fluxo completo de transações financeiras entre contas

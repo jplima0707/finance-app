@@ -5,20 +5,21 @@ import org.springframework.stereotype.Component;
 import com.example.transaction_service.domain.dtos.requests.CreateAccountDTO;
 import com.example.transaction_service.domain.dtos.responses.AccountDTO;
 import com.example.transaction_service.domain.models.Account;
+import com.example.transaction_service.domain.models.User;
 
 @Component
 public class AccountMapper {
     
-    public Account createAccountDTOToEntity(CreateAccountDTO dto) {
+    public Account createAccountDTOToEntity(CreateAccountDTO dto, User user) {
         Account account = new Account();
-        account.setUserId(dto.userId());
+        account.setUser(user);
         return account;
     }
 
     public AccountDTO entityToAccountDTO(Account account) {
         return new AccountDTO(
             account.getAccountId(),
-            account.getUserId(),
+            account.getUser(),
             account.getCreatedAt(),
             account.getUpdatedAt(),
             account.getAccountStatus().name()
