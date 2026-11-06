@@ -10,7 +10,7 @@ public record TransactionRejectedEvent(
     UUID transactionId,
     UUID sourceAccountId,
     UUID destinationAccountId,
-    Instant ocurredAt,
+    Instant occurredAt,
     String rejectionReason,
     EventMetadata eventMetadata
 ) {

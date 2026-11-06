@@ -32,7 +32,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/accounts")
+@RequestMapping("/accounts")
 @RequiredArgsConstructor
 @Tag(name = "Accounts", description = "Operations for managing financial accounts")
 public class AccountController {

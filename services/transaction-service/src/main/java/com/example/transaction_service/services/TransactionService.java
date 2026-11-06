@@ -19,9 +19,11 @@ import com.example.transaction_service.repositories.ITransactionRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j 
 public class TransactionService {
 
     private final ITransactionRepository transactionRepository;
@@ -32,8 +34,10 @@ public class TransactionService {
     @Transactional
     public TransactionResult createTransactionRequest(CreateTransactionDTO request) {
 
+        log.info("Creating transaction request with idempotency key: {}", request.idempotencyKey());
         Optional<Transaction> existingTransaction = transactionRepository.findByIdempotencyKey(request.idempotencyKey());
         if (existingTransaction.isPresent()) {
+            log.info("Transaction with idempotency key: {} already exists", request.idempotencyKey());
             return new TransactionResult(
             transactionMapper.entityToDTO(existingTransaction.get()),
             true
@@ -42,6 +46,7 @@ public class TransactionService {
 
         Optional<Account> destinationAccount = accountRepository.findById(request.destinationAccountId());
         if (destinationAccount.isEmpty()) {
+            log.error("Destination account not found for ID: {}", request.destinationAccountId());
             throw new IllegalArgumentException("Destination account not found");
         }
 
@@ -50,25 +55,40 @@ public class TransactionService {
         // out box pattern
         transactionRepository.save(transaction);
 
-        eventPublisher.publishTransactionRequested(transaction);
+        String traceId = UUID.randomUUID().toString();
 
+        eventPublisher.publishTransactionRequested(transaction, traceId);
+        eventPublisher.publishTransactionCreated(transaction, traceId);
+
+        log.info("Transaction request created successfully with ID: {} (traceId: {})", transaction.getTransactionId(), traceId);
         return new TransactionResult(
             transactionMapper.entityToDTO(transaction),
             false
         );
     }
-
+    
     public List<TransactionDTO> getAllTransactionsBySourceAccountId(UUID accountId) {
-        List<Transaction> transactions = transactionRepository.findBySourceAccountId(accountId);
-        return transactions.stream()
+        Optional<List<Transaction>> transactions = transactionRepository.findBySourceAccountId(accountId);
+        return transactions.map(transactionList -> transactionList.stream()
                 .map(transactionMapper::entityToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()))
+            .orElse(null);
     }
     
     public List<TransactionDTO> getAllTransactionsByDestinationAccountId(UUID accountId) {
-        List<Transaction> transactions = transactionRepository.findByDestinationAccountId(accountId);
-        return transactions.stream()
+        Optional<List<Transaction>> transactions = transactionRepository.findByDestinationAccountId(accountId);
+        return transactions.map(transactionList -> transactionList.stream()
                 .map(transactionMapper::entityToDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()))
+            .orElse(null);
     }
+
+    public List<TransactionDTO> getAllTransactionsByAccountId(UUID accountId) {
+        Optional<List<Transaction>> transactions = transactionRepository.findBySourceAccountIdOrDestinationAccountId(accountId, accountId);
+        return transactions.map(transactionList -> transactionList.stream()
+                .map(transactionMapper::entityToDTO)
+                .collect(Collectors.toList()))
+            .orElse(null);
+    }
+
 }

@@ -5,5 +5,5 @@ import java.util.UUID;
 
 import com.example.transaction_service.domain.models.User;
 
-public record AccountDTO(UUID id, User user, Instant createdAt, Instant updatedAt, String status) {
+public record AccountDTO(UUID accountId, User user, Instant createdAt, Instant updatedAt, String status) {
 }

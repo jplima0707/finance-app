@@ -23,8 +23,8 @@ public class TransactionPublisher {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     
-    public void publishTransactionRequested(Transaction transaction) {
-        log.info("Publishing transaction requested event for transaction ID: {}", transaction.getTransactionId());  
+    public void publishTransactionRequested(Transaction transaction, String traceId) {
+        log.info("Publishing transaction requested event for transaction ID: {}", transaction.getTransactionId());
         TransactionRequestedEvent event = new TransactionRequestedEvent(
             UUID.randomUUID(),
             transaction.getTransactionId(),
@@ -36,7 +36,9 @@ public class TransactionPublisher {
                 "TRANSACTION_REQUESTED",
                 1,
                 Instant.now(),
-                "transaction-service"
+                "transaction-service",
+                traceId,
+                transaction.getIdempotencyKey()
             )
         );
 
@@ -45,22 +47,26 @@ public class TransactionPublisher {
             transaction.getSourceAccountId().toString(),
             EventSerializer.toJson(event)
         );
+
+        log.info("Transaction requested event published successfully for transaction ID: {}", transaction.getTransactionId());
     }
 
-    public void publishTransactionCreated(Transaction transaction) {
+    public void publishTransactionCreated(Transaction transaction, String traceId) {
         log.info("Publishing transaction created event for transaction ID: {}", transaction.getTransactionId());
         TransactionCreatedEvent event = new TransactionCreatedEvent(
             UUID.randomUUID(),
             transaction.getTransactionId(),
             transaction.getSourceAccountId(),
             transaction.getDestinationAccountId(),
-            transaction.getAmount(),    
+            transaction.getAmount(),
             Instant.now(),
             new EventMetadata(
                 "TRANSACTION_CREATED",
                 1,
                 Instant.now(),
-                "transaction-service"
+                "transaction-service",
+                traceId,
+                transaction.getIdempotencyKey()
             )
         );
 
@@ -69,6 +75,8 @@ public class TransactionPublisher {
             transaction.getSourceAccountId().toString(),
             EventSerializer.toJson(event)
         );
+
+        log.info("Transaction created event published successfully for transaction ID: {}", transaction.getTransactionId());
     }
 
 

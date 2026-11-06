@@ -30,7 +30,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/transactions")
+@RequestMapping("/transactions")
 @RequiredArgsConstructor
 @Tag(name = "Transactions", description = "Operations for creating and querying financial transactions")
 public class TransactionController {
@@ -135,6 +135,36 @@ public class TransactionController {
         @PathVariable UUID accountId
     ) {
         List<TransactionDTO> transactions = transactionService.getAllTransactionsByDestinationAccountId(accountId);
+        return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/{accountId}")
+    @Operation(
+        summary = "List all transactions of an account",
+        description = "Returns all transactions where the provided account is the source account or destination account. If none are found, the response is 200 with an empty list."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Transactions found",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = TransactionDTO.class)))
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Invalid account identifier",
+            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Unexpected internal server error",
+            content = @Content(schema = @Schema(implementation = ApiErrorResponse.class))
+        )
+    })
+    public ResponseEntity<List<TransactionDTO>> getAllTransactionsByAccountId(
+        @Parameter(description = "Account identifier", required = true)
+        @PathVariable UUID accountId
+    ) {
+        List<TransactionDTO> transactions = transactionService.getAllTransactionsByAccountId(accountId);
         return ResponseEntity.ok(transactions);
     }
 }

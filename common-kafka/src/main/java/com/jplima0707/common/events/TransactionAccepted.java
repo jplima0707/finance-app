@@ -12,7 +12,7 @@ public record TransactionAccepted(
     UUID sourceAccountId,
     UUID destinationAccountId,
     BigDecimal amount,
-    Instant ocurredAt,
+    Instant occurredAt,
     EventMetadata eventMetadata
 ) {
 }

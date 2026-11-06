@@ -6,6 +6,12 @@ public record EventMetadata(
     String eventType,
     int version,
     Instant publishedAt,
-    String producer
+    String producer,
+    String traceId,
+    String idempotencyKey
 ) {
+
+    public EventMetadata(String eventType, int version, Instant publishedAt, String producer) {
+        this(eventType, version, publishedAt, producer, null, null);
+    }
 }

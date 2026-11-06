@@ -11,6 +11,7 @@ import com.example.transaction_service.domain.models.Transaction;
 public interface ITransactionRepository extends JpaRepository<Transaction, UUID> {
 
     Optional<Transaction> findByIdempotencyKey(String idempotencyKey);
-    List<Transaction> findBySourceAccountId(UUID sourceAccountId);
-    List<Transaction> findByDestinationAccountId(UUID destinationAccountId);    
+    Optional<List<Transaction>> findBySourceAccountId(UUID sourceAccountId);
+    Optional<List<Transaction>> findByDestinationAccountId(UUID destinationAccountId);
+    Optional<List<Transaction>> findBySourceAccountIdOrDestinationAccountId(UUID sourceAccountId, UUID destinationAccountId);    
 }

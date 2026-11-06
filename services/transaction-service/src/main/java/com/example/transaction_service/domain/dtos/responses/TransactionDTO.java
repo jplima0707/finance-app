@@ -7,7 +7,7 @@ import java.util.UUID;
 import com.example.transaction_service.domain.enums.TransactionStatus;
 
 public record TransactionDTO(
-    UUID id,
+    UUID transactionId,
     UUID sourceAccountId,
     UUID destinationAccountId,
     BigDecimal amount,
