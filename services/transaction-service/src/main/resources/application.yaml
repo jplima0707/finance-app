@@ -20,6 +20,14 @@ spring:
     baseline-version: 0
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+outbox:
+  relay:
+    batch-size: 50
+    fixed-delay-ms: 5000
+    max-attempts: 10
+    send-timeout-ms: 10000
+
     consumer:
       group-id: transaction-service
       auto-offset-reset: earliest

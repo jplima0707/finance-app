@@ -3,12 +3,11 @@ package com.example.transaction_service.kafka;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.example.transaction_service.domain.models.Transaction;
+import com.example.transaction_service.services.OutboxService;
 import com.jplima0707.common.EventMetadata;
-import com.jplima0707.common.EventSerializer;
 import com.jplima0707.common.KafkaTopics;
 import com.jplima0707.common.events.TransactionCreatedEvent;
 import com.jplima0707.common.events.TransactionRequestedEvent;
@@ -16,17 +15,23 @@ import com.jplima0707.common.events.TransactionRequestedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Writes transaction events to the transactional outbox. Must be called inside the
+ * same DB transaction that persists the transaction; OutboxRelay delivers them to Kafka.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class TransactionPublisher {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
-    
+    private static final String AGGREGATE_TYPE = "TRANSACTION";
+
+    private final OutboxService outboxService;
+
     public void publishTransactionRequested(Transaction transaction, String traceId) {
-        log.info("Publishing transaction requested event for transaction ID: {}", transaction.getTransactionId());
+        UUID eventId = UUID.randomUUID();
         TransactionRequestedEvent event = new TransactionRequestedEvent(
-            UUID.randomUUID(),
+            eventId,
             transaction.getTransactionId(),
             transaction.getSourceAccountId(),
             transaction.getDestinationAccountId(),
@@ -42,19 +47,23 @@ public class TransactionPublisher {
             )
         );
 
-        kafkaTemplate.send(
+        outboxService.append(
+            eventId,
+            AGGREGATE_TYPE,
+            transaction.getTransactionId(),
+            "TRANSACTION_REQUESTED",
             KafkaTopics.TRANSACTION_REQUESTED,
             transaction.getSourceAccountId().toString(),
-            EventSerializer.toJson(event)
+            event
         );
 
-        log.info("Transaction requested event published successfully for transaction ID: {}", transaction.getTransactionId());
+        log.info("Transaction requested event added to outbox for transaction ID: {}", transaction.getTransactionId());
     }
 
     public void publishTransactionCreated(Transaction transaction, String traceId) {
-        log.info("Publishing transaction created event for transaction ID: {}", transaction.getTransactionId());
+        UUID eventId = UUID.randomUUID();
         TransactionCreatedEvent event = new TransactionCreatedEvent(
-            UUID.randomUUID(),
+            eventId,
             transaction.getTransactionId(),
             transaction.getSourceAccountId(),
             transaction.getDestinationAccountId(),
@@ -70,14 +79,16 @@ public class TransactionPublisher {
             )
         );
 
-        kafkaTemplate.send(
+        outboxService.append(
+            eventId,
+            AGGREGATE_TYPE,
+            transaction.getTransactionId(),
+            "TRANSACTION_CREATED",
             KafkaTopics.TRANSACTION_CREATED,
             transaction.getSourceAccountId().toString(),
-            EventSerializer.toJson(event)
+            event
         );
 
-        log.info("Transaction created event published successfully for transaction ID: {}", transaction.getTransactionId());
+        log.info("Transaction created event added to outbox for transaction ID: {}", transaction.getTransactionId());
     }
-
-
 }
